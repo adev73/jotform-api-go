@@ -3,10 +3,10 @@ package jotform
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 )
 
-var ErrNotImplemented = errors.New("Not Implemented")
+var ErrNotImplemented = errors.New("not implemented")
 
 // DownloadRichPDFSubmission returns a PDF
 // for the provided submissionID and formID
@@ -29,14 +29,14 @@ func (client jotformAPIClient) DownloadRichPDFSubmission(formID, submissionID st
 	if resp.StatusCode == 400 {
 		// This is a response like:
 		// {"responseCode":400,"message":"draw-pdf-answers Request Failed","content":"","duration":"98.08ms","info":"https:\/\/api.jotform.com\/docs#pdf-converter-id-fill-pdf"}
-		return nil, fmt.Errorf("Jotform form %s does not have an associated PDF: %w", formID, ErrNotImplemented)
+		return nil, fmt.Errorf("jotform form %s does not have an associated PDF: %w", formID, ErrNotImplemented)
 	}
 
 	if resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
+		return nil, fmt.Errorf("jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
 	}
 
-	contents, err := ioutil.ReadAll(resp.Body)
+	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -71,10 +71,10 @@ func (client jotformAPIClient) DownloadSimplePDFSubmission(formID, submissionID,
 	defer resp.Body.Close()
 
 	if resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
+		return nil, fmt.Errorf("jotform API request for '%s' failed: %s", resp.Request.URL, resp.Status)
 	}
 
-	contents, err := ioutil.ReadAll(resp.Body)
+	contents, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
