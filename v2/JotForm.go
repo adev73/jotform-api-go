@@ -34,55 +34,55 @@ type JotformAPIClient interface {
 	GetDebugMode() bool
 	SetDebugMode(value bool)
 
-	GetUser() []byte
-	GetUsage() []byte
-	GetForms(offset string, limit string, filter map[string]string, orderBy string) []byte
-	GetSubmissions(offset string, limit string, filter map[string]string, orderBy string) []byte
-	GetSubusers() []byte
-	GetFolders() []byte
-	GetReports() []byte
-	GetSettings() []byte
-	UpdateSettings(settings map[string]string) []byte
-	GetHistory(action string, date string, sortBy string, startDate string, endDate string) []byte
-	GetForm(formID int64) []byte
-	GetFormQuestions(formID int64) []byte
-	GetFormQuestion(formID int64, qid int) []byte
-	GetFormSubmissions(formID int64, offset string, limit string, filter map[string]string, orderBy string) []byte
-	CreateFormSubmission(formId int64, submission map[string]string) []byte
-	CreateFormSubmissions(formId int64, submission []byte) []byte
-	GetFormFiles(formID int64) []byte
-	GetFormWebhooks(formID int64) []byte
-	CreateFormWebhook(formId int64, webhookURL string) []byte
-	DeleteFormWebhook(formID int64, webhookID int64) []byte
-	GetSubmission(sid int64) []byte
-	GetReport(reportID int64) []byte
-	GetFolder(folderID string) []byte
-	CreateFolder(folderProperties map[string]string) []byte
-	DeleteFolder(folderID string) []byte
-	UpdateFolder(folderID string, folderProperties []byte) []byte
-	AddFormsToFolder(folderID string, formIDs []string) []byte
-	AddFormToFolder(folderID string, formID string) []byte
-	GetFormProperties(formID int64) []byte
-	GetFormReports(formID int64) []byte
-	CreateReport(formID int64, report map[string]string) []byte
-	GetFormProperty(formID int64, propertyKey string) []byte
-	DeleteSubmission(sid int64) []byte
-	EditSubmission(sid int64, submission map[string]string) []byte
-	CloneForm(formID int64) []byte
-	DeleteFormQuestion(formID int64, qid int) []byte
-	CreateFormQuestion(formID int64, questionProperties map[string]string) []byte
-	CreateFormQuestions(formID int64, questions []byte) []byte
-	EditFormQuestion(formID int64, qid int, questionProperties map[string]string) []byte
-	SetFormProperties(formID int64, formProperties map[string]string) []byte
-	SetMultipleFormProperties(formID int64, formProperties []byte) []byte
-	CreateForm(form map[string]interface{}) []byte
-	CreateForms(form []byte) []byte
-	DeleteForm(formID int64) []byte
-	RegisterUser(userDetails map[string]string) []byte
-	LoginUser(credentials map[string]string) []byte
-	LogoutUser() []byte
-	GetPlan(planName string) []byte
-	DeleteReport(reportID int64) []byte
+	GetUser() ([]byte, error)
+	GetUsage() ([]byte, error)
+	GetForms(offset string, limit string, filter map[string]string, orderBy string) ([]byte, error)
+	GetSubmissions(offset string, limit string, filter map[string]string, orderBy string) ([]byte, error)
+	GetSubusers() ([]byte, error)
+	GetFolders() ([]byte, error)
+	GetReports() ([]byte, error)
+	GetSettings() ([]byte, error)
+	UpdateSettings(settings map[string]string) ([]byte, error)
+	GetHistory(action string, date string, sortBy string, startDate string, endDate string) ([]byte, error)
+	GetForm(formID int64) ([]byte, error)
+	GetFormQuestions(formID int64) ([]byte, error)
+	GetFormQuestion(formID int64, qid int) ([]byte, error)
+	GetFormSubmissions(formID int64, offset string, limit string, filter map[string]string, orderBy string) ([]byte, error)
+	CreateFormSubmission(formId int64, submission map[string]string) ([]byte, error)
+	CreateFormSubmissions(formId int64, submission []byte) ([]byte, error)
+	GetFormFiles(formID int64) ([]byte, error)
+	GetFormWebhooks(formID int64) ([]byte, error)
+	CreateFormWebhook(formId int64, webhookURL string) ([]byte, error)
+	DeleteFormWebhook(formID int64, webhookID int64) ([]byte, error)
+	GetSubmission(sid int64) ([]byte, error)
+	GetReport(reportID int64) ([]byte, error)
+	GetFolder(folderID string) ([]byte, error)
+	CreateFolder(folderProperties map[string]string) ([]byte, error)
+	DeleteFolder(folderID string) ([]byte, error)
+	UpdateFolder(folderID string, folderProperties []byte) ([]byte, error)
+	AddFormsToFolder(folderID string, formIDs []string) ([]byte, error)
+	AddFormToFolder(folderID string, formID string) ([]byte, error)
+	GetFormProperties(formID int64) ([]byte, error)
+	GetFormReports(formID int64) ([]byte, error)
+	CreateReport(formID int64, report map[string]string) ([]byte, error)
+	GetFormProperty(formID int64, propertyKey string) ([]byte, error)
+	DeleteSubmission(sid int64) ([]byte, error)
+	EditSubmission(sid int64, submission map[string]string) ([]byte, error)
+	CloneForm(formID int64) ([]byte, error)
+	DeleteFormQuestion(formID int64, qid int) ([]byte, error)
+	CreateFormQuestion(formID int64, questionProperties map[string]string) ([]byte, error)
+	CreateFormQuestions(formID int64, questions []byte) ([]byte, error)
+	EditFormQuestion(formID int64, qid int, questionProperties map[string]string) ([]byte, error)
+	SetFormProperties(formID int64, formProperties map[string]string) ([]byte, error)
+	SetMultipleFormProperties(formID int64, formProperties []byte) ([]byte, error)
+	CreateForm(form map[string]interface{}) ([]byte, error)
+	CreateForms(form []byte) ([]byte, error)
+	DeleteForm(formID int64) ([]byte, error)
+	RegisterUser(userDetails map[string]string) ([]byte, error)
+	LoginUser(credentials map[string]string) ([]byte, error)
+	LogoutUser() ([]byte, error)
+	GetPlan(planName string) ([]byte, error)
+	DeleteReport(reportID int64) ([]byte, error)
 }
 
 func NewJotFormAPIClient(apiKey string, outputType string, debugMode bool) *jotformAPIClient {
@@ -249,13 +249,6 @@ func createHistoryQuery(action string, date string, sortBy string, startDate str
 // Returns information and answers of a specific submission.
 func (client jotformAPIClient) GetSubmission(sid int64) ([]byte, error) {
 	return client.executeHttpRequest("user/submission/"+strconv.FormatInt(sid, 10), "", "GET")
-}
-
-// GetFolder
-// folderID (int64): You can get a list of folders from /user/folders.
-// Returns a list of forms in a folder, and other details about the form such as folder color.
-func (client jotformAPIClient) GetFolder(folderID string) ([]byte, error) {
-	return client.executeHttpRequest("folder/"+folderID, "", "GET")
 }
 
 // GetPlan

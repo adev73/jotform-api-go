@@ -3,13 +3,22 @@ package jotform_test
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"testing"
 
 	jotform "github.com/jotform/jotform-api-go/v2"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestInterfaceValid(t *testing.T) {
+	// Temporary test just to make sure we got the monster interface right.
+	type testInterfaceOk struct {
+		v jotform.JotformAPIClient
+	}
+	ti := testInterfaceOk{v: jotform.NewJotFormAPIClient("", "", false)}
+	fmt.Printf("Interface passes: %+v", ti.v)
+}
 
 func TestURL(t *testing.T) {
 	t.Run("happy - uses default URL", func(t *testing.T) {
@@ -19,7 +28,7 @@ func TestURL(t *testing.T) {
 		client := jotform.NewTestClient(
 			&jotform.MockHttpClient{DoFunc: func(req *http.Request) (*http.Response, error) {
 				reqURL = req.URL.String()
-				return &http.Response{Body: ioutil.NopCloser(bytes.NewBufferString("Dummy Response"))}, nil
+				return &http.Response{Body: io.NopCloser(bytes.NewBufferString("Dummy Response"))}, nil
 			}},
 		)
 
@@ -35,7 +44,7 @@ func TestURL(t *testing.T) {
 		client := jotform.NewTestClient(
 			&jotform.MockHttpClient{DoFunc: func(req *http.Request) (*http.Response, error) {
 				reqURL = req.URL.String()
-				return &http.Response{Body: ioutil.NopCloser(bytes.NewBufferString("Dummy Response"))}, nil
+				return &http.Response{Body: io.NopCloser(bytes.NewBufferString("Dummy Response"))}, nil
 			}},
 		)
 		client.BaseURL = enterpriseURL
